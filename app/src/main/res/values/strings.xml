@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PayPalIntegration</string>
+    <string name="btn">pay</string>
+</resources>
