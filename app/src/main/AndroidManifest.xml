@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SQLDemo"
         tools:targetApi="31">
-        <activity android:name=".PaymentDetails"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,6 +27,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name=".PaymentDetails"></activity>
     </application>
 
 </manifest>

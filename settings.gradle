@@ -30,3 +30,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "SQLDemo"
 include ':app'
+include ':paypalIntegration'

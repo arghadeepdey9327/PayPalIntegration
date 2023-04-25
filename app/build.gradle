@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'com.example.sqldemo'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.sqldemo"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -48,6 +48,8 @@ android {
 }
 
 dependencies {
+    implementation project(path:':paypalIntegration')
+
  //paypal sdk
     implementation "com.paypal.sdk:paypal-android-sdk:2.16.0"
 

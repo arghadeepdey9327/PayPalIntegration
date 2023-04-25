@@ -1,5 +1,4 @@
 package com.example.sqldemo
-import android.app.Activity
 import android.os.Bundle
 import android.content.Intent
 import android.widget.Toast
@@ -19,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.paypalintegration.Integration
 import com.example.sqldemo.store.State
 import com.example.sqldemo.ui.theme.SQLDemoTheme
 import org.json.JSONException
@@ -26,38 +26,7 @@ import org.json.JSONException
 class MainActivity : ComponentActivity() {
     private val vm: State by viewModels()
     private var price: String = ""
-    private val config = PayPalConfiguration()
-        .environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
-        .clientId(Config.PAYPAL_CLIENT_ID)
-
-//    private val PAYPAL_REQUEST_CODE = 200
-
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data: Intent? = result.data
-                if (data != null) {
-                    val confirmation: PaymentConfirmation? =
-                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION)
-                    if (confirmation != null) {
-                        val paymentDetails = confirmation.toJSONObject().toString(4)
-                        try {
-                            startActivity(
-                                Intent(this, PaymentDetails::class.java)
-                                    .putExtra("PaymentDetails", paymentDetails)
-                                    .putExtra("PaymentAmount", price)
-                            )
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
-            } else if (result.resultCode == Activity.RESULT_CANCELED)
-                Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show()
-            else if (result.resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
-                Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
-        }
-
+    private lateinit var integration: Integration
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -66,31 +35,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val intent = Intent(this, PayPalService::class.java)
-                    intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
-                    startService(intent)
+                    integration=Integration(
+                        PAYPAL_CLIENT_ID =Config.PAYPAL_CLIENT_ID,
+                        from =this,
+                        to =PaymentDetails::class.java,
+                        price=price)
+                    integration.startService()
                     price = main(vm = vm)
                 }
             }
         }
     }
-
-    private fun startPayment(price: String) {
-        val payment = PayPalPayment(
-            BigDecimal(java.lang.String.valueOf(price)), "USD", "Accenture Payment",
-            PayPalPayment.PAYMENT_INTENT_SALE
-        )
-        val intent = Intent(this, PaymentActivity::class.java)
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
-        startForResult.launch(intent)
-    }
-
-    override fun onDestroy() {
-        stopService(Intent(this, PayPalService::class.java))
-        super.onDestroy()
-    }
-
     @Composable
     fun main(vm: State): String {
         val price = vm.amount.collectAsState().value
@@ -102,8 +57,9 @@ class MainActivity : ComponentActivity() {
             UserInput(vm = vm)
             Spacer(modifier = Modifier.height(10.dp))
             Button(onClick = {
-                startPayment(
-                    price = price
+                integration.startPayment(
+                    price=price,
+                    toCompany = "Accenture PLC"
                 )
             }) {
                 Text(
@@ -123,5 +79,8 @@ class MainActivity : ComponentActivity() {
             value = vm.amount.collectAsState().value
         )
     }
-
+    override fun onDestroy() {
+        integration.onDestroy(from = this,to=PaymentDetails::class.java)
+        super.onDestroy()
+    }
 }
