@@ -1,4 +1,5 @@
 package com.example.sqldemo
+import android.content.Context
 import android.os.Bundle
 import android.content.Intent
 import android.widget.Toast
@@ -25,7 +26,6 @@ import org.json.JSONException
 
 class MainActivity : ComponentActivity() {
     private val vm: State by viewModels()
-    private var price: String = ""
     private lateinit var integration: Integration
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,19 +35,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    integration=Integration(
-                        PAYPAL_CLIENT_ID =Config.PAYPAL_CLIENT_ID,
-                        from =this,
-                        to =PaymentDetails::class.java,
-                        price=price)
-                    integration.startService()
-                    price = main(vm = vm)
+                    main(vm = vm,
+                    context = this
+                    )
                 }
             }
         }
     }
     @Composable
-    fun main(vm: State): String {
+    fun main(vm: State,context:Context){
         val price = vm.amount.collectAsState().value
         Column(
             verticalArrangement = Arrangement.Center,
@@ -56,7 +52,16 @@ class MainActivity : ComponentActivity() {
         {
             UserInput(vm = vm)
             Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = {
+            Button(onClick =
+            //Below code is starting of callback lambda function
+            //what's call when button pressed by user
+            {
+                integration=Integration(
+                    PAYPAL_CLIENT_ID =Config.PAYPAL_CLIENT_ID,
+                    from =context,
+                    to =PaymentDetails::class.java,
+                    price=price)
+                integration.service()
                 integration.startPayment(
                     price=price,
                     toCompany = "Accenture PLC"
@@ -67,7 +72,6 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-        return price
     }
     @Composable
     fun UserInput(vm: State) {

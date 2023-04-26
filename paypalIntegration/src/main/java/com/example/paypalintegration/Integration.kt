@@ -46,7 +46,7 @@ class Integration(
                 Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
         }
 
-    fun startService() {
+    fun service() {
         val intent = Intent(from, PayPalService::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
         startService(intent)

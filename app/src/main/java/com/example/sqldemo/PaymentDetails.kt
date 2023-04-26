@@ -47,18 +47,14 @@ class PaymentDetails: ComponentActivity() {
                         )
                     }
                     val intent = intent
-//                    try {
                         val jsonDetails = JSONObject(intent.getStringExtra("PaymentDetails"))
                         showDetails(
                             jsonDetails.getJSONObject("response"),
                             intent.getStringExtra("PaymentAmount")!!
                         )
-//                    } catch (e: JSONException) {
-//                        Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
-//                    }
                 }
 
-                }//end of surface
-            }//end of onCreate method
+                }
+            }
         }
     }
