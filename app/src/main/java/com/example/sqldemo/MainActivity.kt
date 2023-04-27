@@ -96,9 +96,12 @@ class MainActivity : ComponentActivity() {
             UserInput(vm = vm)
             Spacer(modifier = Modifier.height(10.dp))
             Button(onClick = {
+                if(price=="") {
+                    Toast.makeText(context, "Invalid amount", Toast.LENGTH_SHORT).show()
+                }else{
                 startPayment(
                     price = price
-                )
+                )}
             }) {
                 Text(
                     text = stringResource(id = R.string.btn)
