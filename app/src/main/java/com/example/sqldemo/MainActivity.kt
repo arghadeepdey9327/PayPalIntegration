@@ -55,13 +55,17 @@ class MainActivity : ComponentActivity() {
             //Below code is starting of callback lambda function
             //what's call when button pressed by user
             {
-                Integration(
-                    PAYPAL_CLIENT_ID =Config.PAYPAL_CLIENT_ID,
-                    from =context,
-                    to =PaymentDetails::class.java,
-                    price=price,
-                 toCompany = "Company Name here"
+                if(price==""){
+                    Toast.makeText(context,"Please Enter Amount",Toast.LENGTH_SHORT).show()
+                }else {
+                    Integration(
+                        PAYPAL_CLIENT_ID = Config.PAYPAL_CLIENT_ID,
+                        from = context,
+                        to = PaymentDetails::class.java,
+                        price = price,
+                        toCompany = "Company Name here"
                     ).startPayment()
+                }
             }) {
                 Text(
                     text = stringResource(id = R.string.btn)
