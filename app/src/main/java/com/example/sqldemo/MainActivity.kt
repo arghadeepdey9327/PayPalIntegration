@@ -26,7 +26,6 @@ import org.json.JSONException
 
 class MainActivity : ComponentActivity() {
     private val vm: State by viewModels()
-    private lateinit var integration: Integration
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -56,16 +55,13 @@ class MainActivity : ComponentActivity() {
             //Below code is starting of callback lambda function
             //what's call when button pressed by user
             {
-                integration=Integration(
+                Integration(
                     PAYPAL_CLIENT_ID =Config.PAYPAL_CLIENT_ID,
                     from =context,
                     to =PaymentDetails::class.java,
-                    price=price)
-                integration.service()
-                integration.startPayment(
                     price=price,
-                    toCompany = "Accenture PLC"
-                )
+                 toCompany = "Company Name here"
+                    ).startPayment()
             }) {
                 Text(
                     text = stringResource(id = R.string.btn)
@@ -77,7 +73,7 @@ class MainActivity : ComponentActivity() {
     fun UserInput(vm: State) {
         TextField(
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone
+                keyboardType = KeyboardType.Number
             ),
             onValueChange = { vm.updateAmount(it) },
             value = vm.amount.collectAsState().value

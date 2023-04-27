@@ -3,6 +3,7 @@ package com.example.paypalintegration
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -15,8 +16,10 @@ class Integration(
     val PAYPAL_CLIENT_ID: String,
     val from: Context,
     val to: Class<out ComponentActivity>,
-    val price:String
+    val price:String,
+    val toCompany:String
 ): ComponentActivity() {
+
     val config = PayPalConfiguration()
         .environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
         .clientId(PAYPAL_CLIENT_ID)
@@ -46,12 +49,11 @@ class Integration(
                 Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
         }
 
-    fun service() {
-        val intent = Intent(from, PayPalService::class.java)
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
-        startService(intent)
-    }
-    fun startPayment(price: String,toCompany:String) {
+//    override fun onCreate(si: Bundle?){
+//        super.onCreate(si)
+//    }
+
+    fun startPayment() {
         val payment = PayPalPayment(
             BigDecimal(java.lang.String.valueOf(price)), "USD", toCompany,
             PayPalPayment.PAYMENT_INTENT_SALE
