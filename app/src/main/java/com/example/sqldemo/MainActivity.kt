@@ -85,12 +85,6 @@ class MainActivity : ComponentActivity() {
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
         startForResult.launch(intent)
     }
-
-    override fun onDestroy() {
-        stopService(Intent(this, PayPalService::class.java))
-        super.onDestroy()
-    }
-
     @Composable
     fun main(vm: State): String {
         val price = vm.amount.collectAsState().value
