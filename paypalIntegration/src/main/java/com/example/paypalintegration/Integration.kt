@@ -61,7 +61,4 @@ class Integration(
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
         startForResult.launch(intent)
     }
-    fun onDestroy(from: Context, to: Class<out ComponentActivity>) {
-        stopService(Intent(from, to))
-    }
 }

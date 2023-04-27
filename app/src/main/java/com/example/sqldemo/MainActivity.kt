@@ -83,8 +83,4 @@ class MainActivity : ComponentActivity() {
             value = vm.amount.collectAsState().value
         )
     }
-    override fun onDestroy() {
-        integration.onDestroy(from = this,to=PaymentDetails::class.java)
-        super.onDestroy()
-    }
 }
