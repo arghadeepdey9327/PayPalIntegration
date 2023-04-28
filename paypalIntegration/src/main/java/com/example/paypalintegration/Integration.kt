@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -44,9 +45,9 @@ class Integration(
                     }
                 }
             } else if (result.resultCode == Activity.RESULT_CANCELED)
-                Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show()
+                Toast.makeText(from, "Cancel", Toast.LENGTH_SHORT).show()
             else if (result.resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
-                Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
+                Toast.makeText(from, "Invalid", Toast.LENGTH_SHORT).show()
         }
 
 //    override fun onCreate(si: Bundle?){
@@ -54,11 +55,12 @@ class Integration(
 //    }
 
     fun startPayment() {
+        Log.i("start","")
         val payment = PayPalPayment(
             BigDecimal(java.lang.String.valueOf(price)), "USD", toCompany,
             PayPalPayment.PAYMENT_INTENT_SALE
         )
-        val intent = Intent(this, PaymentActivity::class.java)
+        val intent = Intent(from, PaymentActivity::class.java)
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config)
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
         startForResult.launch(intent)
